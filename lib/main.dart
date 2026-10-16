@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:first_app/other_view/list_view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,28 +15,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        // fontFamily: 'Oswald', // kalo mau ganti seluruh font app
+        textTheme: GoogleFonts.alikeTextTheme(), // kalo pake google fonts
       ),
       // home: const Scaffold(
       //   body: Center(
       //     // child: Heading(text: "Hello World!"),
       //     child: BiggerText(text: "Hello World!"),
-      home: const FirstScreen(),
+      // home: const FirstScreen(),
+      home: const ContohListViewSeparated(),
     );
   }
 }
@@ -252,7 +242,35 @@ class FirstScreen extends StatelessWidget {
                   SwitchWidget(),
                   RadioWidget(),
                   CheckboxWidget(),
-
+                  Image.network(
+                    // input gambar
+                    'https://picsum.photos/200/300',
+                    width: 200,
+                    height: 200,
+                    // fit: BoxFit.cover, // maksa kepotong tapi full utuh di bingkai
+                    // fit: BoxFit.contain, // diperkecil pokoknya semua keliatan tapi ga ke fill full di bingkai
+                    fit: BoxFit.fill,
+                    // fill full di bingkai dan semua keliatan tapi ke stretch
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Center(child: CircularProgressIndicator());
+                    },
+                    errorBuilder: (context, child, stackTrace) {
+                      return Center(
+                        child: Icon(Icons.error, color: Colors.red),
+                      );
+                    },
+                  ),
+                  // loadingBuilder (memantau progres pengunduhan data/foto) dan errorBuilder (menangkap kegagalan akses url) sebagai bentuk loading saat image belom ada
+                  Image.asset(
+                    'assets/images/yato.jpeg',
+                    width: 150,
+                    height: 150,
+                  ),
+                  Text(
+                    'Custom Font: Oswald',
+                    style: TextStyle(fontFamily: 'Oswald', fontSize: 30),
+                  ),
                 ],
               ),
             ),
@@ -283,6 +301,8 @@ class FirstScreen extends StatelessWidget {
   }
 }
 
+// DROPDOWN - INPUT
+
 class MyDropDownWidget extends StatefulWidget {
   const MyDropDownWidget({super.key});
 
@@ -311,6 +331,8 @@ class _MyDropDownWidgetState extends State<MyDropDownWidget> {
   }
 }
 
+// TEXTFIELD - INPUT
+
 class TextFieldWidget extends StatefulWidget {
   const TextFieldWidget({super.key});
 
@@ -319,7 +341,8 @@ class TextFieldWidget extends StatefulWidget {
 }
 
 class _TextFieldWidgetState extends State<TextFieldWidget> {
-  final TextEditingController _controller = TextEditingController(); // definisiin variabel dari TextEditingController
+  final TextEditingController _controller =
+      TextEditingController(); // definisiin variabel dari TextEditingController
 
   @override
   void dispose() {
@@ -332,7 +355,8 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
     return Column(
       children: [
         TextField(
-          controller: _controller, // panggil controller supaya textfield bisa di baca editingnya
+          controller: _controller,
+          // panggil controller supaya textfield bisa di baca editingnya
           keyboardType: TextInputType.text,
           obscureText: false,
           decoration: const InputDecoration(
@@ -342,17 +366,23 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
           // onChanged: (String value) { // ini setiap perubahan di laporin
           //   debugPrint("Updated : $value"); // print di terminal
           // },
-          onSubmitted: (String value) { // ini tunggu di klik ok dulu di keyboard
+          onSubmitted: (String value) {
+            // ini tunggu di klik ok dulu di keyboard
             debugPrint("Submitted : $value");
           },
         ),
         const SizedBox(height: 20),
         ElevatedButton(
           onPressed: () {
-            showDialog( // popup
-              context: context, // context tu artinya mau ditampilin di  widget tree mana, di BuildContext context yg ini.
-              builder: (context) { // ini ngebuild nya, isi parameter (context dari showDialog (context yg kiri))
-                return AlertDialog(content: Text('Hello, ${_controller.text}')); // basic model popup (AlertDialog)
+            showDialog(
+              // popup
+              context: context,
+              // context tu artinya mau ditampilin di  widget tree mana, di BuildContext context yg ini.
+              builder: (context) {
+                // ini ngebuild nya, isi parameter (context dari showDialog (context yg kiri))
+                return AlertDialog(
+                  content: Text('Hello, ${_controller.text}'),
+                ); // basic model popup (AlertDialog)
               },
             );
           },
@@ -362,6 +392,64 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
     );
   }
 }
+
+class FlexibleWidget extends StatelessWidget {
+  const FlexibleWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Latihan Flexible',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.red,
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Row(
+                children: [ // flex bisa diatur (contoh: flex:1 dan flex:2) maka container ke 2 lebih panjang
+                  Icon(Icons.settings), // dari icon sampe container doang adalah contoh expanded
+                  Expanded(
+                      child: Container(
+                        color: Colors.blue,
+                        child: Text('Expanded'),
+                      )
+                  ),
+                  Container(
+                    color: Colors.yellow,
+                    child: Text('Rest of Expanded'),
+                  ),
+                  // Flexible(
+                  //   fit: FlexFit.tight, // dia kayak expanded, makan ruang yg kosong
+                  //   // fit: FlexFit.loose, // dia cuma make jumlah ruang yg seharusnya dia punya aja
+                  //   child: Container(
+                  //     color: Colors.tealAccent,
+                  //     child: Text(
+                  //       'Flexible 1',
+                  //     ), // disini dia ga ngelebihin batasnya dia, masih ngasih space untuk widget lain
+                  //   ),
+                  // ),
+                  // Flexible(
+                  //   child: Container(
+                  //     color: Colors.tealAccent,
+                  //     child: Text('Flexible 2'),
+                  //   ),
+                  // ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// SWITCH BUTTON - INPUT
 
 class SwitchWidget extends StatefulWidget {
   const SwitchWidget({super.key});
@@ -376,19 +464,19 @@ class _SwitchWidgetState extends State<SwitchWidget> {
   @override
   Widget build(BuildContext context) {
     return SwitchListTile(
-        value: isLightMode,
-        onChanged: (bool status) {
-          setState(() {
-            isLightMode = status;
-          });
-        },
-        title: Text(isLightMode ? 'Light Mode' : 'Dark Mode'),
-        secondary: Icon(isLightMode ? Icons.wb_sunny : Icons.nights_stay),
+      value: isLightMode,
+      onChanged: (bool status) {
+        setState(() {
+          isLightMode = status;
+        });
+      },
+      title: Text(isLightMode ? 'Light Mode' : 'Dark Mode'),
+      secondary: Icon(isLightMode ? Icons.wb_sunny : Icons.nights_stay),
     );
   }
-
 }
 
+// RADIO BUTTON - INPUT
 
 class RadioWidget extends StatefulWidget {
   const RadioWidget({super.key});
@@ -430,6 +518,8 @@ class _RadioWidgetState extends State<RadioWidget> {
   }
 }
 
+// CHECKBOX - INPUT
+
 class HobbyItem {
   final String title;
   final bool isChecked;
@@ -466,10 +556,12 @@ class _CheckboxWidgetState extends State<CheckboxWidget> {
           'Select Your Hobbies:',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
-        ..._hobbies.map((hobby) { // ... tu supaya isi dari map ga di dalem areanya [] sendiri tapi sejajar sama parentnya
+        ..._hobbies.map((hobby) {
+          // ... tu supaya isi dari map ga di dalem areanya [] sendiri tapi sejajar sama parentnya
           // ubah ListTile menjadi CheckboxListTile
           return CheckboxListTile(
-            controlAffinity: ListTileControlAffinity.leading, // memindahkan posisi checkbox ke kiri title
+            controlAffinity: ListTileControlAffinity.leading,
+            // memindahkan posisi checkbox ke kiri title
             title: Text(hobby.title),
             value: hobby.isChecked,
             onChanged: (bool? value) {
