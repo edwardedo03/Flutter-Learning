@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:first_app/other_view/list_view.dart';
+import 'package:first_app/other_view/navigator.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
       //     // child: Heading(text: "Hello World!"),
       //     child: BiggerText(text: "Hello World!"),
       // home: const FirstScreen(),
-      home: const ContohListViewSeparated(),
+      home: const ContohNavigatorPush(),
     );
   }
 }
